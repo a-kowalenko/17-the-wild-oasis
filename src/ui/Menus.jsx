@@ -1,5 +1,4 @@
 import { createContext, useContext, useState } from "react";
-import { createPortal } from "react-dom";
 import { HiEllipsisVertical } from "react-icons/hi2";
 import styled from "styled-components";
 import { useOutsideClick } from "../hooks/useOutsideClick";
@@ -32,13 +31,13 @@ const StyledToggle = styled.button`
 
 const StyledList = styled.ul`
     position: absolute;
-
+    width: max-content;
     background-color: var(--color-grey-0);
     box-shadow: var(--shadow-md);
     border-radius: var(--border-radius-md);
 
-    right: ${(props) => props.position.x}px;
-    top: ${(props) => props.position.y}px;
+    right: ${(props) => props.$position.x}px;
+    top: ${(props) => props.$position.y}px;
 `;
 
 const StyledButton = styled.button`
@@ -108,7 +107,7 @@ function List({ id, children }) {
     }
 
     return (
-        <StyledList position={{ x: 32, y: 0 }} ref={ref}>
+        <StyledList $position={{ x: 32, y: 0 }} ref={ref}>
             {children}
         </StyledList>
     );

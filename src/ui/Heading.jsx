@@ -22,6 +22,8 @@ const Heading = styled.h1`
             font-weight: 500;
         `}
 
+
+
     line-height:1.4;
 `;
 

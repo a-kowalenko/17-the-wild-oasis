@@ -82,6 +82,7 @@ function CabinRow({ cabin }) {
                             <Menus.Button
                                 icon={<HiSquare2Stack />}
                                 onClick={handleDuplicate}
+                                isCreating={isCreating}
                             >
                                 Duplicate
                             </Menus.Button>

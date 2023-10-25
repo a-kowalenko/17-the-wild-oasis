@@ -1,4 +1,5 @@
-import supabase from "./supabase";
+import { useMutation } from "@tanstack/react-query";
+import supabase, { supabaseUrl } from "./supabase";
 
 export async function signup({ fullName, email, password }) {
     const { data, error } = await supabase.auth.signUp({
@@ -55,4 +56,49 @@ export async function logout() {
     if (error) {
         throw new Error(error.message);
     }
+}
+
+export async function updateCurrentUser({ fullName, password, avatar }) {
+    // 1. Update password OR fullName
+    let updateData;
+    if (password) {
+        updateData = { password };
+    } else if (fullName) {
+        updateData = { data: { fullName } };
+    }
+    const { data, error: updateError } =
+        await supabase.auth.updateUser(updateData);
+
+    if (updateError) {
+        throw new Error(updateError.message);
+    }
+
+    if (!avatar) {
+        return data;
+    }
+
+    // 2. Upload the avatar image
+    const fileName = `avatar-${data.user.id}-${Math.random()}`;
+
+    const { error: storageError } = await supabase.storage
+        .from("avatars")
+        .upload(fileName, avatar);
+
+    if (storageError) {
+        throw new Error(storageError.message);
+    }
+
+    // 3. Update avatar in the user
+    const { data: updatedUser, error: avatarError } =
+        await supabase.auth.updateUser({
+            data: {
+                avatar: `${supabaseUrl}/storage/v1/object/public/avatars/${fileName}`,
+            },
+        });
+
+    if (avatarError) {
+        throw new Error(avatarError.message);
+    }
+
+    return updatedUser;
 }
